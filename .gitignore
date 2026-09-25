@@ -1,0 +1,38 @@
+# Local secrets & kubeconfig
+*.kubeconfig
+kubeconfig
+.env
+.env.*
+*.secret.yaml
+*.secrets.yaml
+
+# Terraform / OpenTofu
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+
+# Helm
+*.tgz
+charts/**/charts/
+
+# k3d / kube
+.k3d/
+.kube/
+
+# Editor
+.idea/
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Binaries & build
+bin/
+dist/
+*.out
+
+# Logs
+*.log
