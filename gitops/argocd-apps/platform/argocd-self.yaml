@@ -21,6 +21,10 @@ spec:
               cpu: 100m
               memory: 256Mi
         server:
+          ingress:
+            enabled: true
+            ingressClassName: traefik
+            hostname: argocd.localhost
           resources:
             requests:
               cpu: 50m
