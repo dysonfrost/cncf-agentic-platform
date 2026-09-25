@@ -5,41 +5,17 @@ metadata:
   namespace: argocd
 spec:
   project: default
-  source:
-    repoURL: https://argoproj.github.io/argo-helm
-    chart: argo-cd
-    targetRevision: 10.9.2
-    helm:
-      releaseName: argocd
-      values: |
-        configs:
-          params:
-            server.insecure: true
-        controller:
-          resources:
-            requests:
-              cpu: 100m
-              memory: 256Mi
-        server:
-          ingress:
-            enabled: true
-            ingressClassName: traefik
-            hostname: argocd.localhost
-          resources:
-            requests:
-              cpu: 50m
-              memory: 128Mi
-        repoServer:
-          resources:
-            requests:
-              cpu: 50m
-              memory: 128Mi
-        redis-ha:
-          enabled: false
-        notifications:
-          enabled: false
-        dex:
-          enabled: false
+  sources:
+    - repoURL: https://argoproj.github.io/argo-helm
+      chart: argo-cd
+      targetRevision: 10.9.2
+      helm:
+        releaseName: argocd
+        valueFiles:
+          - $values/bootstrap/argocd/values.yaml
+    - repoURL: https://github.com/dysonfrost/cncf-agentic-platform.git
+      targetRevision: main
+      ref: values
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
