@@ -76,9 +76,9 @@ make cluster-up  # TODO
 
 ## Roadmap
 
-- [ ] Scaffold repository
-- [ ] Local k3d cluster up/down
-- [ ] GitOps bootstrap with Argo CD
+- [x] Scaffold repository
+- [x] Local k3d cluster up/down
+- [x] GitOps bootstrap with Argo CD
 - [ ] Observability stack
 - [ ] Security baseline
 - [ ] Networking baseline
