@@ -79,7 +79,7 @@ make cluster-up  # TODO
 - [x] Scaffold repository
 - [x] Local k3d cluster up/down
 - [x] GitOps bootstrap with Argo CD
-- [ ] Observability stack
+- [x] Observability stack
 - [ ] Security baseline
 - [ ] Networking baseline
 - [ ] kagent deployment
