@@ -65,7 +65,7 @@ argocd-install: check-deps ## Install Argo CD via Helm (one-time bootstrap)
 	@$(KUBECTL) get pods -n argocd
 
 .PHONY: gitops-bootstrap
-gitops-bootstrap: ## Apply the root Application to start GitOps reconciliation
+gitops-bootstrap: check-deps ## Apply the root Application to start GitOps reconciliation
 	@$(KUBECTL) get crd applications.argoproj.io >/dev/null 2>&1 || \
 		{ echo "Argo CD CRDs not found. Run 'make argocd-install' first."; exit 1; }
 	@$(KUBECTL) apply -f gitops/argocd-apps/root-app.yaml
@@ -78,3 +78,7 @@ gitops-status: ## Show Argo CD Applications and sync status
 		-o custom-columns=NAME:.metadata.name,SYNC:.status.sync.status,HEALTH:.status.health.status
 	@echo ""
 	@$(KUBECTL) get pods -n argocd
+
+.PHONY: argocd-password
+argocd-password: ## Print the Argo CD initial admin password
+	@$(KUBECTL) -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
