@@ -20,9 +20,9 @@ projects**, with a focus on **AI agents as first-class workloads**.
 
 ## Status
 
-🚧 Day 0 — repository scaffolding.
+Active development. Cluster, GitOps, and observability are operational.
 
-## Architecture (target)
+## Architecture
 
 ```text
 ┌─────────────────────────────────────────────────────────────┐
@@ -45,34 +45,39 @@ projects**, with a focus on **AI agents as first-class workloads**.
 └─────────────────────────────────────────────────────────────┘
 ```
 
-Details will be added as the platform is built.
-
 ## Prerequisites
 
-- Docker
+- Docker (or a compatible container runtime)
 - k3d
 - kubectl
 - helm
-- argocd (CLI)
+- make
 
 ## Quickstart
 
 ```bash
-make help
-make bootstrap   # TODO
-make cluster-up  # TODO
+make cluster-up        # create local k3d cluster
+make argocd-install    # install Argo CD via Helm
+make gitops-bootstrap  # hand over control to Argo CD
+make gitops-status     # verify apps are Synced / Healthy
 ```
+
+UIs:
+
+- Argo CD: [argocd.localhost:8080](http://argocd.localhost:8080) — user `admin`, password via `make argocd-password`
+- Grafana: [grafana.localhost:8080](http://grafana.localhost:8080) — user `admin`, password `prom-operator`
+
+Run `make help` for all targets.
 
 ## Repository layout
 
-| Path         | Purpose                                             |
-| ------------ | --------------------------------------------------- |
-| `bootstrap/` | Cluster and platform bootstrap scripts              |
-| `clusters/`  | k3d cluster definitions (multi-cluster ready)       |
-| `gitops/`    | GitOps manifests (Argo CD)                          |
-| `platform/`  | Platform components (networking, security, observ.) |
-| `agents/`    | AI agent definitions and workloads                  |
-| `docs/`      | Documentation, ADRs, runbooks                       |
+| Path         | Purpose                                           |
+| ------------ | ------------------------------------------------- |
+| `bootstrap/` | One-time bootstrap (k3d cluster, Argo CD install) |
+| `gitops/`    | Argo CD Applications                              |
+| `platform/`  | Platform component values                         |
+| `agents/`    | AI agent definitions and workloads                |
+| `docs/adr/`  | Architecture Decision Records                     |
 
 ## Roadmap
 
@@ -97,5 +102,3 @@ responsible for the final content.
 Code is licensed under the [Apache 2.0 license](LICENSE).
 
 Documentation is licensed under a [CC-BY-4.0 license](LICENSE-docs).
-
-This is a personal project and is not affiliated with CNCF or kagent.
