@@ -1,0 +1,17 @@
+# Architecture Decision Records
+
+This directory holds ADRs for `cncf-agentic-platform`. Format: [MADR 4.0](https://adr.github.io/madr/).
+
+Each ADR is a single Markdown file with YAML front-matter. Files are numbered
+four-digit-zero-padded and never renumbered. Superseded ADRs are kept and linked.
+
+## Format
+
+MADR 4.0, minimal template, with front-matter and Confirmation section added.
+See `template.md`.
+
+## Index
+
+| #                                         | Status   | Title                        |
+| ----------------------------------------- | -------- | ---------------------------- |
+| [0001](0001-use-k3d-for-local-cluster.md) | Accepted | Use k3d for local Kubernetes |
