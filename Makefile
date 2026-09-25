@@ -3,6 +3,7 @@
 CLUSTER_NAME   ?= cncf-agentic-platform
 CLUSTER_CONFIG ?= bootstrap/k3d/cluster.yaml
 KUBECTL        := kubectl --context k3d-$(CLUSTER_NAME)
+ARGOCD_CHART_VERSION ?= 10.9.2
 
 .PHONY: help
 help: ## Show this help
@@ -13,6 +14,8 @@ check-deps: ## Verify required tools and Docker daemon are available
 	@command -v k3d     >/dev/null || { echo "k3d is required"; exit 1; }
 	@command -v kubectl >/dev/null || { echo "kubectl is required"; exit 1; }
 	@command -v docker  >/dev/null || { echo "docker is required"; exit 1; }
+	@command -v helm    >/dev/null || { echo "helm is required"; exit 1; }
+	@command -v git     >/dev/null || { echo "git is required"; exit 1; }
 	@docker info >/dev/null 2>&1 || { echo "Docker daemon is not reachable."; exit 1; }
 	@echo "All prerequisites OK."
 
@@ -49,3 +52,29 @@ cluster-smoke-test: ## Run a smoke-test pod on each node
 	@$(KUBECTL) wait --for=condition=Ready pod -l app=cluster-smoke-test --timeout=60s
 	@$(KUBECTL) get pods -o wide -l app=cluster-smoke-test
 	@$(KUBECTL) delete pods -l app=cluster-smoke-test --wait=true
+
+.PHONY: argocd-install
+argocd-install: check-deps ## Install Argo CD via Helm (one-time bootstrap)
+	@helm repo add argo https://argoproj.github.io/argo-helm 2>/dev/null || true
+	@helm repo update
+	@helm upgrade --install argocd argo/argo-cd \
+		--namespace argocd --create-namespace \
+		--version $(ARGOCD_CHART_VERSION) \
+		-f bootstrap/argocd/values.yaml \
+		--rollback-on-failure --wait --timeout 5m
+	@$(KUBECTL) get pods -n argocd
+
+.PHONY: gitops-bootstrap
+gitops-bootstrap: ## Apply the root Application to start GitOps reconciliation
+	@$(KUBECTL) get crd applications.argoproj.io >/dev/null 2>&1 || \
+		{ echo "Argo CD CRDs not found. Run 'make argocd-install' first."; exit 1; }
+	@$(KUBECTL) apply -f gitops/argocd-apps/root-app.yaml
+	@echo "Root Application applied. Argo CD will reconcile from Git."
+	@$(MAKE) gitops-status
+
+.PHONY: gitops-status
+gitops-status: ## Show Argo CD Applications and sync status
+	@$(KUBECTL) get applications -n argocd \
+		-o custom-columns=NAME:.metadata.name,SYNC:.status.sync.status,HEALTH:.status.health.status
+	@echo ""
+	@$(KUBECTL) get pods -n argocd
