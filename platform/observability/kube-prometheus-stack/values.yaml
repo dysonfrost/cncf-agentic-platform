@@ -1,3 +1,7 @@
+# CRDs are managed by the prometheus-operator-crds Application (ADR 0006)
+crds:
+  enabled: false
+
 # kube-prometheus-stack tuned for k3d on a dev laptop.
 # Target footprint: ~2 GiB.
 
