@@ -15,3 +15,4 @@ See `template.md`.
 | #                                         | Status   | Title                        |
 | ----------------------------------------- | -------- | ---------------------------- |
 | [0001](0001-use-k3d-for-local-cluster.md) | Accepted | Use k3d for local Kubernetes |
+| [0002](0002-use-argo-cd-for-gitops.md)    | Accepted | Use Argo CD for GitOps       |
