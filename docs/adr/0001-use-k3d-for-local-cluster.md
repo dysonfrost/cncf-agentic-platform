@@ -39,4 +39,6 @@ cleanup.
 
 ### Confirmation
 
-`make cluster-up`, `make cluster-verify`, `make cluster-down`.
+Single-command lifecycle on both macOS and Linux: cluster creation, multi-node
+readiness, and cleanup leave no containers or volumes behind. See `make help`
+for the current entry points.
