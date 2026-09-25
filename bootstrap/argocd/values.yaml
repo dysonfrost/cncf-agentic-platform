@@ -17,13 +17,13 @@ server:
     hostname: argocd.localhost
   resources:
     requests:
-      cpu: 50m
+      cpu: 60m
       memory: 128Mi
 
 repoServer:
   resources:
     requests:
-      cpu: 50m
+      cpu: 60m
       memory: 128Mi
 
 redis-ha:
