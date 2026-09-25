@@ -4,23 +4,21 @@ metadata:
   name: cncf-agentic-platform
 image: rancher/k3s:v1.31.5-k3s1
 servers: 1
-agents: 1
+agents: 2
 options:
   k3s:
     extraArgs:
-      # Reduced from default 110 for a low-resource lab
       - arg: "--kubelet-arg=max-pods=50"
         nodeFilters:
           - server:*
           - agent:*
   runtime:
-    # Fake meminfo injected into the container, not a real Docker limit
     serversMemory: "1024MiB"
     agentsMemory: "1024MiB"
 ports:
-  - port: 8080:80 # Ingress HTTP
+  - port: 8080:80
     nodeFilters:
       - loadbalancer
-  - port: 8443:443 # Ingress HTTPS
+  - port: 8443:443
     nodeFilters:
       - loadbalancer

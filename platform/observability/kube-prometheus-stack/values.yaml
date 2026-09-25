@@ -1,0 +1,92 @@
+# kube-prometheus-stack tuned for k3d on a dev laptop.
+# Target footprint: ~2 GiB.
+
+# Components not present or not useful on K3s
+kubeEtcd:
+  enabled: false
+kubeControllerManager:
+  enabled: false
+kubeScheduler:
+  enabled: false
+kubeProxy:
+  enabled: false
+
+# Admission webhooks hang on single-node clusters; disable them
+prometheusOperator:
+  admissionWebhooks:
+    enabled: false
+  tls:
+    enabled: false
+
+# Prometheus: short retention, modest resources, ephemeral storage
+prometheus:
+  prometheusSpec:
+    retention: 6h
+    retentionSize: "1GiB"
+    scrapeInterval: 30s
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+      limits:
+        cpu: 1000m
+        memory: 1Gi
+    storageSpec: {} # emptyDir, consistent with disposable cluster
+
+# Grafana: no default dashboards, ingress via Traefik
+grafana:
+  defaultDashboardsEnabled: false
+  adminPassword: prom-operator # chart default, local lab only
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 768Mi
+  readinessProbe:
+    timeoutSeconds: 5
+  ingress:
+    enabled: true
+    ingressClassName: traefik
+    hosts:
+      - grafana.localhost
+
+# Alertmanager: minimal
+alertmanager:
+  alertmanagerSpec:
+    resources:
+      requests:
+        cpu: 10m
+        memory: 32Mi
+      limits:
+        cpu: 100m
+        memory: 64Mi
+
+# Node exporter: one per node, adjusted probe timeouts for k3d
+prometheus-node-exporter:
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 128Mi
+  livenessProbe:
+    timeoutSeconds: 5
+  readinessProbe:
+    timeoutSeconds: 5
+
+# Kube state metrics: adjusted probe timeouts
+kube-state-metrics:
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+  livenessProbe:
+    timeoutSeconds: 5
+  readinessProbe:
+    timeoutSeconds: 5
