@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kagent
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  project: default
+  sources:
+    - repoURL: ghcr.io/kagent-dev/kagent/helm
+      chart: kagent
+      targetRevision: 0.10.2
+      helm:
+        releaseName: kagent
+        valueFiles:
+          - $values/platform/kagent/values.yaml
+    - repoURL: https://github.com/dysonfrost/cncf-agentic-platform.git
+      targetRevision: main
+      ref: values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kagent
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

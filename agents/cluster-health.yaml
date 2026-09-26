@@ -1,0 +1,33 @@
+apiVersion: kagent.dev/v1alpha2
+kind: Agent
+metadata:
+  name: cluster-health
+  namespace: kagent
+spec:
+  description: Kubernetes cluster health assistant
+  type: Declarative
+  declarative:
+    modelConfig: ollama-qwen3
+    systemMessage: |
+      You are a Kubernetes cluster health assistant.
+      Query Prometheus and summarize the cluster state in natural language.
+      Focus on: node status, pod health, resource usage, and any firing alerts.
+    tools:
+      - type: McpServer
+        mcpServer:
+          name: kagent-tool-server
+          kind: RemoteMCPServer
+          apiGroup: kagent.dev
+          toolNames:
+            - k8s_get_resources
+            - k8s_describe_resource
+            - k8s_get_pod_logs
+    deployment:
+      replicas: 1
+      resources:
+        requests:
+          cpu: 50m
+          memory: 128Mi
+        limits:
+          cpu: 200m
+          memory: 256Mi

@@ -1,0 +1,10 @@
+apiVersion: kagent.dev/v1alpha2
+kind: ModelConfig
+metadata:
+  name: ollama-qwen3
+  namespace: kagent
+spec:
+  provider: Ollama
+  model: qwen3:8b
+  ollama:
+    host: http://host.k3d.internal:11434

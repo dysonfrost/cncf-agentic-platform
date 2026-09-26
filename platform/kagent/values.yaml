@@ -1,0 +1,45 @@
+controller:
+  substrate:
+    enabled: false
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+# Point to Ollama on the host
+providers:
+  default: ollama
+  ollama:
+    host: http://host.k3d.internal:11434
+    model: qwen3:8b
+
+# Bundled PostgreSQL for sessions and conversation history
+database:
+  postgres:
+    bundled:
+      enabled: true
+
+# Disable built-in agents we don't need yet
+k8s-agent:
+  enabled: false
+helm-agent:
+  enabled: false
+istio-agent:
+  enabled: false
+cilium-policy-agent:
+  enabled: false
+cilium-manager-agent:
+  enabled: false
+cilium-debug-agent:
+  enabled: false
+kgateway-agent:
+  enabled: false
+argo-rollouts-agent:
+  enabled: false
+observability-agent:
+  enabled: false
+promql-agent:
+  enabled: true
