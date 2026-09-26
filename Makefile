@@ -17,6 +17,7 @@ check-deps: ## Verify required tools and Docker daemon are available
 	@command -v helm    >/dev/null || { echo "helm is required"; exit 1; }
 	@command -v git     >/dev/null || { echo "git is required"; exit 1; }
 	@docker info >/dev/null 2>&1 || { echo "Docker daemon is not reachable."; exit 1; }
+	@docker compose version >/dev/null 2>&1 || { echo "docker compose plugin is required"; exit 1; }
 	@echo "All prerequisites OK."
 
 .PHONY: cluster-up
@@ -82,3 +83,29 @@ gitops-status: ## Show Argo CD Applications and sync status
 .PHONY: argocd-password
 argocd-password: ## Print the Argo CD initial admin password
 	@$(KUBECTL) -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
+
+.PHONY: ollama-env
+ollama-env: ## Generate bootstrap/ollama/.env with host-specific GPU group GIDs
+	@if ! getent group render >/dev/null; then \
+		echo "Error: 'render' group not found on this host."; \
+		echo "This group is required for AMD GPU access via ROCm."; \
+		exit 1; \
+	fi
+	@printf "VIDEO_GID=%s\nRENDER_GID=%s\n" \
+		"$$(getent group video | cut -d: -f3)" \
+		"$$(getent group render | cut -d: -f3)" \
+		> bootstrap/ollama/.env
+	@echo "Generated bootstrap/ollama/.env:"
+	@cat bootstrap/ollama/.env
+
+.PHONY: ollama-install
+ollama-install: ollama-env ## Start Ollama on the host with ROCm GPU support
+	@docker compose -f bootstrap/ollama/compose.yaml up -d --wait
+	@docker exec ollama ollama list | grep -q qwen3:8b || \
+		{ echo "Pulling qwen3:8b (this may take a few minutes)..."; \
+		  docker exec ollama ollama pull qwen3:8b; }
+	@docker ps --filter name=ollama
+
+.PHONY: ollama-stop
+ollama-stop: ## Stop Ollama on the host
+	@docker compose -f bootstrap/ollama/compose.yaml down

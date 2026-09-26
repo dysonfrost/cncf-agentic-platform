@@ -32,10 +32,15 @@ Ollama runs as `ollama/ollama:rocm` with `HSA_OVERRIDE_GFX_VERSION=10.3.0`
 The model is `qwen3:8b`, chosen for its function calling capabilities over
 `llama3.1:8b`. Installation is scripted via `make ollama-install`.
 
+The Docker setup is Linux-only (requires ROCm and `/dev/kfd`). On macOS,
+Ollama is installed natively and uses Metal. Both expose the same HTTP API
+on `localhost:11434`.
+
 ### Consequences
 
 - Good, because the full 12 GiB VRAM is available for inference.
-- Good, because the same setup works on macOS (Metal) and Linux (ROCm).
+- Good, because Ollama uses the GPU on both platforms, though differently:
+  Metal on macOS (native install), ROCm on Linux (Docker container).
 - Good, because no cloud API dependency and no inference cost.
 - Bad, because Ollama is not managed by Argo CD; it runs outside the cluster
   as a host-level Docker container.
