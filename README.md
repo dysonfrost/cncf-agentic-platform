@@ -20,7 +20,13 @@ projects**, with a focus on **AI agents as first-class workloads**.
 
 ## Status
 
-Active development. Cluster, GitOps, and observability are operational.
+Operational. k3d, GitOps, observability, and kagent are running.
+
+## Demo
+
+![Cluster inventory](docs/images/cluster-health-resources.png)
+
+![Log analysis](docs/images/cluster-health-logs.png)
 
 ## Architecture
 
@@ -64,8 +70,9 @@ make gitops-status     # verify apps are Synced / Healthy
 
 UIs:
 
-- Argo CD: [argocd.localhost:8080](http://argocd.localhost:8080) — user `admin`, password via `make argocd-password`
-- Grafana: [grafana.localhost:8080](http://grafana.localhost:8080) — user `admin`, password `prom-operator`
+- Argo CD: [argocd.localhost:8080](http://argocd.localhost:8080) — password via `make argocd-password`
+- Grafana: [grafana.localhost:8080](http://grafana.localhost:8080) — `admin` / `prom-operator`
+- kagent: [kagent.localhost:8080](http://kagent.localhost:8080)
 
 Run `make help` for all targets.
 
@@ -73,7 +80,7 @@ Run `make help` for all targets.
 
 | Path         | Purpose                                           |
 | ------------ | ------------------------------------------------- |
-| `bootstrap/` | One-time bootstrap (k3d cluster, Argo CD install) |
+| `bootstrap/` | One-time bootstrap (k3d cluster, Argo CD, Ollama) |
 | `gitops/`    | Argo CD Applications                              |
 | `platform/`  | Platform component values                         |
 | `agents/`    | AI agent definitions and workloads                |
@@ -85,10 +92,11 @@ Run `make help` for all targets.
 - [x] Local k3d cluster up/down
 - [x] GitOps bootstrap with Argo CD
 - [x] Observability stack
+- [x] kagent deployment
+- [x] First agent use case
 - [ ] Security baseline
 - [ ] Networking baseline
-- [ ] kagent deployment
-- [ ] First agent use case
+- [ ] Agent-to-agent workflow
 - [ ] Documentation and demos
 
 ## AI Transparency
