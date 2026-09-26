@@ -22,3 +22,4 @@ See `template.md`.
 | [0006](0006-separate-crds-application.md)      | Accepted | Deploy CRD-heavy charts via a dedicated CRDs Application |
 | [0007](0007-use-kagent-for-agentic-runtime.md) | Accepted | Use kagent as the agentic runtime                        |
 | [0008](0008-ollama-on-host.md)                 | Accepted | Run Ollama on the host for local LLM inference           |
+| [0009](0009-defer-substrate-for-kagent.md)     | Accepted | Defer Agent Substrate for kagent                         |
