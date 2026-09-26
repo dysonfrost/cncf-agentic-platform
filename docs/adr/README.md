@@ -12,11 +12,13 @@ See `template.md`.
 
 ## Index
 
-| #                                         | Status   | Title                                                    |
-| ----------------------------------------- | -------- | -------------------------------------------------------- |
-| [0001](0001-use-k3d-for-local-cluster.md) | Accepted | Use k3d for local Kubernetes                             |
-| [0002](0002-use-argo-cd-for-gitops.md)    | Accepted | Use Argo CD for GitOps                                   |
-| [0003](0003-expose-uis-via-traefik.md)    | Accepted | Expose platform UIs via Traefik                          |
-| [0004](0004-multi-source-applications.md) | Accepted | Use multi-source Applications                            |
-| [0005](0005-observability-scope.md)       | Accepted | Start observability with kube-prometheus-stack only      |
-| [0006](0006-separate-crds-application.md) | Accepted | Deploy CRD-heavy charts via a dedicated CRDs Application |
+| #                                              | Status   | Title                                                    |
+| ---------------------------------------------- | -------- | -------------------------------------------------------- |
+| [0001](0001-use-k3d-for-local-cluster.md)      | Accepted | Use k3d for local Kubernetes                             |
+| [0002](0002-use-argo-cd-for-gitops.md)         | Accepted | Use Argo CD for GitOps                                   |
+| [0003](0003-expose-uis-via-traefik.md)         | Accepted | Expose platform UIs via Traefik                          |
+| [0004](0004-multi-source-applications.md)      | Accepted | Use multi-source Applications                            |
+| [0005](0005-observability-scope.md)            | Accepted | Start observability with kube-prometheus-stack only      |
+| [0006](0006-separate-crds-application.md)      | Accepted | Deploy CRD-heavy charts via a dedicated CRDs Application |
+| [0007](0007-use-kagent-for-agentic-runtime.md) | Accepted | Use kagent as the agentic runtime                        |
+| [0008](0008-ollama-on-host.md)                 | Accepted | Run Ollama on the host for local LLM inference           |
