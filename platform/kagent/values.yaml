@@ -43,3 +43,5 @@ observability-agent:
   enabled: false
 promql-agent:
   enabled: true
+kmcp:
+  enabled: false

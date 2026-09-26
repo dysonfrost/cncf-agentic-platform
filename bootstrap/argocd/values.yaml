@@ -1,14 +1,17 @@
-# Minimal Argo CD values for a local k3d lab on 8 GiB.
-
 configs:
   params:
     server.insecure: true
+    # Augmente le timeout du health check du repo-server
+    reposerver.parallelism.limit: "0"
 
 controller:
   resources:
     requests:
       cpu: 100m
       memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
 
 server:
   ingress:
@@ -19,17 +22,28 @@ server:
     requests:
       cpu: 50m
       memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
 
 repoServer:
   resources:
     requests:
-      cpu: 50m
-      memory: 128Mi
+      cpu: 200m
+      memory: 512Mi
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+  livenessProbe:
+    timeoutSeconds: 10
+    failureThreshold: 5
+    initialDelaySeconds: 30
+  readinessProbe:
+    timeoutSeconds: 10
+    failureThreshold: 5
+    initialDelaySeconds: 15
 
 redis-ha:
-  enabled: false
-
-applicationSet:
   enabled: false
 
 notifications:

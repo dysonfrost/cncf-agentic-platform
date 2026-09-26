@@ -4,7 +4,7 @@ metadata:
   name: cncf-agentic-platform
 image: rancher/k3s:v1.31.5-k3s1
 servers: 1
-agents: 2
+agents: 3
 options:
   k3s:
     extraArgs:
@@ -13,8 +13,8 @@ options:
           - server:*
           - agent:*
   runtime:
-    serversMemory: "1024MiB"
-    agentsMemory: "1024MiB"
+    serversMemory: "2g"
+    agentsMemory: "2g"
 ports:
   - port: 8080:80
     nodeFilters:
