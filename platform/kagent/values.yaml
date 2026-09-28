@@ -1,3 +1,16 @@
+# kagent without Substrate (ADR 0007)
+
+kmcp:
+  enabled: false
+
+# OTLP tracing to the OTel Collector (ADR 0011)
+otel:
+  tracing:
+    enabled: true
+    exporter:
+      otlp:
+        endpoint: http://otel-collector-opentelemetry-collector.tempo.svc.cluster.local:4317
+
 controller:
   substrate:
     enabled: false
@@ -22,6 +35,7 @@ database:
     bundled:
       enabled: true
 
+# kagent UI exposed via Traefik ingress
 extraObjects:
   - apiVersion: networking.k8s.io/v1
     kind: Ingress
@@ -63,5 +77,3 @@ observability-agent:
   enabled: false
 promql-agent:
   enabled: true
-kmcp:
-  enabled: false
