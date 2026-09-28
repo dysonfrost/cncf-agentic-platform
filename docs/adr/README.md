@@ -26,3 +26,4 @@ See `template.md`.
 | [0010](0010-multi-agent-orchestration.md)      | Accepted | Use supervisor fan-out for multi-agent orchestration     |
 | [0011](0011-agent-observability-scope.md)      | Accepted | Observe kagent with metrics and traces                   |
 | [0012](0012-defer-kagent-metrics.md)           | Accepted | Defer kagent metrics until v1.0                          |
+| [0013](0013-use-kyverno-for-policies.md)       | Accepted | Use Kyverno for admission policies                       |
