@@ -23,3 +23,4 @@ See `template.md`.
 | [0007](0007-use-kagent-for-agentic-runtime.md) | Accepted | Use kagent as the agentic runtime                        |
 | [0008](0008-ollama-on-host.md)                 | Accepted | Run Ollama on the host for local LLM inference           |
 | [0009](0009-defer-substrate-for-kagent.md)     | Accepted | Defer Agent Substrate for kagent                         |
+| [0010](0010-multi-agent-orchestration.md)      | Accepted | Use supervisor fan-out for multi-agent orchestration     |
