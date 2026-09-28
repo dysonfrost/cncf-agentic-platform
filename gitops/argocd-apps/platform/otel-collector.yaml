@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: otel-collector
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  project: default
+  sources:
+    - repoURL: https://open-telemetry.github.io/opentelemetry-helm-charts
+      chart: opentelemetry-collector
+      targetRevision: 0.173.1
+      helm:
+        releaseName: otel-collector
+        valueFiles:
+          - $values/platform/otel-collector/values.yaml
+    - repoURL: https://github.com/dysonfrost/cncf-agentic-platform.git
+      targetRevision: main
+      ref: values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: tempo
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
