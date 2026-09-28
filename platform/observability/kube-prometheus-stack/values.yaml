@@ -37,7 +37,7 @@ prometheus:
         memory: 1Gi
     storageSpec: {} # emptyDir, consistent with disposable cluster
 
-# Grafana: no default dashboards, ingress via Traefik
+# Grafana: no default dashboards, ingress via Traefik, Tempo datasource
 grafana:
   defaultDashboardsEnabled: false
   adminPassword: prom-operator # chart default, local lab only
@@ -55,6 +55,19 @@ grafana:
     ingressClassName: traefik
     hosts:
       - grafana.localhost
+  additionalDataSources:
+    - name: Tempo
+      type: tempo
+      access: proxy
+      url: http://tempo.tempo.svc.cluster.local:3200
+      uid: tempo
+      jsonData:
+        tracesToMetrics:
+          datasourceUid: prometheus
+        serviceMap:
+          datasourceUid: prometheus
+        nodeGraph:
+          enabled: true
 
 # Alertmanager: minimal
 alertmanager:
