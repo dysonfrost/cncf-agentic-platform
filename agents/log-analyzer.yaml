@@ -1,0 +1,47 @@
+apiVersion: kagent.dev/v1alpha2
+kind: Agent
+metadata:
+  name: log-analyzer
+  namespace: kagent
+spec:
+  description: Analyzes pod logs and identifies errors, patterns, and anomalies.
+  type: Declarative
+  declarative:
+    modelConfig: ollama-qwen3
+    systemMessage: |
+      You are a Kubernetes log analysis assistant.
+
+      Given a pod name and namespace, fetch its logs using the
+      k8s_get_pod_logs tool and analyze them.
+
+      Cover: error messages, recurring patterns, potential root causes,
+      and recommendations. Cite specific log lines when identifying issues.
+      If the pod has no logs or is not found, report that clearly.
+    tools:
+      - type: McpServer
+        mcpServer:
+          name: kagent-tool-server
+          kind: RemoteMCPServer
+          apiGroup: kagent.dev
+          toolNames:
+            - k8s_get_pod_logs
+    a2aConfig:
+      skills:
+        - id: analyze-logs
+          name: Analyze Pod Logs
+          description: Fetch and analyze logs from a specific pod
+          tags:
+            - logs
+            - debugging
+          examples:
+            - "Analyze the logs of pod my-app-123 in namespace default"
+            - "What errors are in the logs of the coredns pod?"
+    deployment:
+      replicas: 1
+      resources:
+        requests:
+          cpu: 50m
+          memory: 128Mi
+        limits:
+          cpu: 200m
+          memory: 256Mi
