@@ -39,6 +39,12 @@ the final diagnosis:
 
 ![Multi-agent investigation](docs/images/incident-investigator-demo.png)
 
+**Distributed tracing** — Grafana + Tempo showing the span waterfall of an
+agent invocation. The trace shows that 36.2s of the 36.3s total is spent in
+the LLM (`generate_content qwen3:8b`), while MCP tool calls take 48ms:
+
+![Agent trace](docs/images/tempo-trace.png)
+
 ## Architecture
 
 ```text
