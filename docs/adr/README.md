@@ -24,3 +24,5 @@ See `template.md`.
 | [0008](0008-ollama-on-host.md)                 | Accepted | Run Ollama on the host for local LLM inference           |
 | [0009](0009-defer-substrate-for-kagent.md)     | Accepted | Defer Agent Substrate for kagent                         |
 | [0010](0010-multi-agent-orchestration.md)      | Accepted | Use supervisor fan-out for multi-agent orchestration     |
+| [0011](0011-agent-observability-scope.md)      | Accepted | Observe kagent with metrics and traces                   |
+| [0012](0012-defer-kagent-metrics.md)           | Accepted | Defer kagent metrics until v1.0                          |
