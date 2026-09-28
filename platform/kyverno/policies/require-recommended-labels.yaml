@@ -1,0 +1,25 @@
+# yaml-language-server: $schema=none
+apiVersion: policies.kyverno.io/v1
+kind: ValidatingPolicy
+metadata:
+  name: require-recommended-labels
+spec:
+  validationActions:
+    - Deny
+  evaluation:
+    background:
+      enabled: false
+  matchConstraints:
+    resourceRules:
+      - apiGroups: ["apps"]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["deployments", "statefulsets", "daemonsets"]
+  validations:
+    - expression: >-
+        has(object.metadata.labels) &&
+        'app.kubernetes.io/name' in object.metadata.labels &&
+        'app.kubernetes.io/instance' in object.metadata.labels
+      message: >-
+        Workloads must carry 'app.kubernetes.io/name' and
+        'app.kubernetes.io/instance' labels.
