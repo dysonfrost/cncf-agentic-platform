@@ -1,0 +1,50 @@
+apiVersion: kagent.dev/v1alpha2
+kind: Agent
+metadata:
+  name: incident-investigator
+  namespace: kagent
+spec:
+  description: Investigates cluster incidents by delegating to specialized agents.
+  type: Declarative
+  declarative:
+    modelConfig: ollama-qwen3
+    systemMessage: |
+      You are an incident investigation orchestrator for a Kubernetes cluster.
+
+      When asked about a problem, delegate to specialized sub-agents:
+      - cluster-health: overall cluster state, nodes, pods, resource usage
+      - log-analyzer: analyze logs of specific pods
+
+      Call both sub-agents in parallel when the question is broad
+      (e.g., "Why is my cluster slow?"). Synthesize their responses into a
+      coherent diagnosis.
+    tools:
+      - type: Agent
+        agent:
+          name: cluster-health
+        isolateSessions: true
+      - type: Agent
+        agent:
+          name: log-analyzer
+        isolateSessions: true
+    a2aConfig:
+      skills:
+        - id: investigate-incident
+          name: Investigate Incident
+          description: Investigate cluster incidents by consulting specialized agents
+          tags:
+            - incident
+            - investigation
+            - orchestration
+          examples:
+            - "Why is my cluster slow?"
+            - "Investigate the errors in the monitoring namespace"
+    deployment:
+      replicas: 1
+      resources:
+        requests:
+          cpu: 50m
+          memory: 128Mi
+        limits:
+          cpu: 200m
+          memory: 256Mi
