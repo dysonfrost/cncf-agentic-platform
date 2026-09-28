@@ -24,9 +24,20 @@ Operational. k3d, GitOps, observability, and kagent are running.
 
 ## Demo
 
+**Cluster health agent** — queries nodes and pods via `k8s_get_resources`:
+
 ![Cluster inventory](docs/images/cluster-health-resources.png)
 
+**Log analysis agent** — fetches pod logs via `k8s_get_pod_logs`:
+
 ![Log analysis](docs/images/cluster-health-logs.png)
+
+**Multi-agent investigation** — `incident-investigator` orchestrates
+`cluster-health` and `log-analyzer` in parallel (fan-out), handles a
+human-in-the-loop clarification when a pod name is missing, and synthesizes
+the final diagnosis:
+
+![Multi-agent investigation](docs/images/incident-investigator-demo.png)
 
 ## Architecture
 
@@ -94,9 +105,9 @@ Run `make help` for all targets.
 - [x] Observability stack
 - [x] kagent deployment
 - [x] First agent use case
+- [x] Agent-to-agent workflow
 - [ ] Security baseline
 - [ ] Networking baseline
-- [ ] Agent-to-agent workflow
 - [ ] Documentation and demos
 
 ## AI Transparency
