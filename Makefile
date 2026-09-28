@@ -1,9 +1,10 @@
 .DEFAULT_GOAL := help
 
-CLUSTER_NAME   ?= cncf-agentic-platform
-CLUSTER_CONFIG ?= bootstrap/k3d/cluster.yaml
-KUBECTL        := kubectl --context k3d-$(CLUSTER_NAME)
+CLUSTER_NAME     ?= cncf-agentic-platform
+CLUSTER_CONFIG   ?= bootstrap/k3d/cluster.yaml
+KUBECTL          := kubectl --context k3d-$(CLUSTER_NAME)
 ARGOCD_CHART_VERSION ?= 10.9.2
+OLLAMA_COMPOSE   := bootstrap/ollama/compose.yaml
 
 .PHONY: help
 help: ## Show this help
@@ -11,11 +12,9 @@ help: ## Show this help
 
 .PHONY: check-deps
 check-deps: ## Verify required tools and Docker daemon are available
-	@command -v k3d     >/dev/null || { echo "k3d is required"; exit 1; }
-	@command -v kubectl >/dev/null || { echo "kubectl is required"; exit 1; }
-	@command -v docker  >/dev/null || { echo "docker is required"; exit 1; }
-	@command -v helm    >/dev/null || { echo "helm is required"; exit 1; }
-	@command -v git     >/dev/null || { echo "git is required"; exit 1; }
+	@for tool in k3d kubectl docker helm git; do \
+		command -v $$tool >/dev/null || { echo "$$tool is required"; exit 1; }; \
+	done
 	@docker info >/dev/null 2>&1 || { echo "Docker daemon is not reachable."; exit 1; }
 	@docker compose version >/dev/null 2>&1 || { echo "docker compose plugin is required"; exit 1; }
 	@echo "All prerequisites OK."
@@ -100,7 +99,7 @@ ollama-env: ## Generate bootstrap/ollama/.env with host-specific GPU group GIDs
 
 .PHONY: ollama-install
 ollama-install: ollama-env ## Start Ollama on the host with ROCm GPU support
-	@docker compose -f bootstrap/ollama/compose.yaml up -d --wait
+	@docker compose -f $(OLLAMA_COMPOSE) up -d --wait
 	@docker exec ollama ollama list | grep -q qwen3:8b || \
 		{ echo "Pulling qwen3:8b (this may take a few minutes)..."; \
 		  docker exec ollama ollama pull qwen3:8b; }
@@ -108,4 +107,13 @@ ollama-install: ollama-env ## Start Ollama on the host with ROCm GPU support
 
 .PHONY: ollama-stop
 ollama-stop: ## Stop Ollama on the host
-	@docker compose -f bootstrap/ollama/compose.yaml down
+	@docker compose -f $(OLLAMA_COMPOSE) down
+
+.PHONY: clean
+clean: ## Remove cluster, stop Ollama, delete model cache
+	@$(MAKE) cluster-down
+	@$(MAKE) ollama-stop
+	@volumes=$$(docker volume ls -q | grep ollama); \
+	if [ -n "$$volumes" ]; then docker volume rm $$volumes; \
+	else echo "No Ollama volume found."; fi
+	@echo "Cleanup complete."
