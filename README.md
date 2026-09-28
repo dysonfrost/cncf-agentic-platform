@@ -20,7 +20,7 @@ projects**, with a focus on **AI agents as first-class workloads**.
 
 ## Status
 
-Operational. k3d, GitOps, observability, and kagent are running.
+Operational. k3d, GitOps, observability, security, and kagent are running.
 
 ## Demo
 
@@ -112,7 +112,7 @@ Run `make help` for all targets.
 - [x] kagent deployment
 - [x] First agent use case
 - [x] Agent-to-agent workflow
-- [ ] Security baseline
+- [x] Security baseline
 - [ ] Networking baseline
 - [ ] Documentation and demos
 
