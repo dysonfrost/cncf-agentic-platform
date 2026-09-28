@@ -24,24 +24,23 @@ Operational. k3d, GitOps, observability, security, and kagent are running.
 
 ## Demo
 
-**Cluster health agent** — queries nodes and pods via `k8s_get_resources`:
+**Cluster inventory** — `cluster-health` queries nodes and pods via
+`k8s_get_resources`:
 
 ![Cluster inventory](docs/images/cluster-health-resources.png)
 
-**Log analysis agent** — fetches pod logs via `k8s_get_pod_logs`:
+**Log analysis** — `log-analyzer` fetches pod logs via `k8s_get_pod_logs`:
 
 ![Log analysis](docs/images/cluster-health-logs.png)
 
-**Multi-agent investigation** — `incident-investigator` orchestrates
-`cluster-health` and `log-analyzer` in parallel (fan-out), handles a
-human-in-the-loop clarification when a pod name is missing, and synthesizes
-the final diagnosis:
+**Multi-agent investigation** — `incident-investigator` delegates to
+`cluster-health` and `log-analyzer` in parallel, handles a human-in-the-loop
+clarification, and synthesizes the diagnosis:
 
 ![Multi-agent investigation](docs/images/incident-investigator-demo.png)
 
-**Distributed tracing** — Grafana + Tempo showing the span waterfall of an
-agent invocation. The trace shows that 36.2s of the 36.3s total is spent in
-the LLM (`generate_content qwen3:8b`), while MCP tool calls take 48ms:
+**Distributed tracing** — Grafana + Tempo span waterfall. 36.2s of the 36.3s
+total is spent in the LLM; MCP tool calls take 48ms:
 
 ![Agent trace](docs/images/tempo-trace.png)
 
@@ -71,37 +70,57 @@ the LLM (`generate_content qwen3:8b`), while MCP tool calls take 48ms:
 ## Prerequisites
 
 - Docker (or a compatible container runtime)
-- k3d
-- kubectl
-- helm
-- make
+- k3d, kubectl, helm, make
+
+Ollama runs on the host ([ADR 0008](docs/adr/0008-ollama-on-host.md)).
+`make ollama-install` is Linux-only (ROCm); on macOS, install Ollama
+natively. See [bootstrap/ollama/README.md](bootstrap/ollama/README.md).
 
 ## Quickstart
 
 ```bash
+make check-deps        # verify required tools are installed
 make cluster-up        # create local k3d cluster
+make ollama-install    # start Ollama on the host, pull qwen3:8b
 make argocd-install    # install Argo CD via Helm
 make gitops-bootstrap  # hand over control to Argo CD
 make gitops-status     # verify apps are Synced / Healthy
 ```
 
-UIs:
+## UIs
 
 - Argo CD: [argocd.localhost:8080](http://argocd.localhost:8080) — password via `make argocd-password`
 - Grafana: [grafana.localhost:8080](http://grafana.localhost:8080) — `admin` / `prom-operator`
 - kagent: [kagent.localhost:8080](http://kagent.localhost:8080)
 
+Prometheus and Tempo are datasources in Grafana. Prometheus also has its own
+UI via `kubectl -n monitoring port-forward svc/kube-prometheus-stack-prometheus 9090:9090`.
+
 Run `make help` for all targets.
+
+## Agents
+
+Three kagent agents: `cluster-health`, `log-analyzer`, and
+`incident-investigator` (A2A orchestrator). Definitions in
+[agents/](agents/), synced by Argo CD. See
+[agents/README.md](agents/README.md).
+
+## Teardown
+
+```bash
+make clean   # removes cluster, stops Ollama, deletes the model cache (~5 GB)
+```
 
 ## Repository layout
 
-| Path         | Purpose                                           |
-| ------------ | ------------------------------------------------- |
-| `bootstrap/` | One-time bootstrap (k3d cluster, Argo CD, Ollama) |
-| `gitops/`    | Argo CD Applications                              |
-| `platform/`  | Platform component values                         |
-| `agents/`    | AI agent definitions and workloads                |
-| `docs/adr/`  | Architecture Decision Records                     |
+| Path           | Purpose                                           |
+| -------------- | ------------------------------------------------- |
+| `bootstrap/`   | One-time bootstrap (k3d cluster, Argo CD, Ollama) |
+| `gitops/`      | Argo CD Applications                              |
+| `platform/`    | Platform component values                         |
+| `agents/`      | AI agent definitions and workloads                |
+| `docs/adr/`    | Architecture Decision Records                     |
+| `docs/images/` | Demo screenshots                                  |
 
 ## Roadmap
 
@@ -114,7 +133,7 @@ Run `make help` for all targets.
 - [x] Agent-to-agent workflow
 - [x] Security baseline
 - [ ] Networking baseline
-- [ ] Documentation and demos
+- [x] Documentation and demos
 
 ## AI Transparency
 
